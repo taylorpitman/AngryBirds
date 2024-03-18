@@ -18,7 +18,7 @@ public class SlingShotHandler : MonoBehaviour
 
     [Header("Position Limits")]
     [SerializeField] private float maxDistance = 3.5f;
-    [SerializeField] private float shotForce = 5f;
+    [SerializeField] private float shotForce = 9f;
     private Vector2 slingShotLinesMaxPosition;  //limit how far lines can go
 
     [Header("Area Management")]
@@ -34,6 +34,8 @@ public class SlingShotHandler : MonoBehaviour
 
     private bool birdOnSlingShot = false;
 
+    [SerializeField] private float spawnDelay = 2f;
+
 
     private void Awake()
     {
@@ -47,23 +49,39 @@ public class SlingShotHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //make this a public variable and do this in slingshotArea ??
         if (Mouse.current.leftButton.wasPressedThisFrame && slingshotArea.isWithinArea())
         {
             withinArea = true;
         }
 
-        if (Mouse.current.leftButton.isPressed && withinArea)
+        //nested if statement ?
+        if (Mouse.current.leftButton.isPressed && withinArea && birdOnSlingShot)
         {
             DrawSlingShot();
             PositionAngieBird();
 
         }
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            withinArea = false;
-            spawnedBird.LaunchBird(direction, shotForce);
-        }
 
+        if (Mouse.current.leftButton.wasReleasedThisFrame && birdOnSlingShot)
+        {
+            if(GameManager.gameManager.HasEnoughShots())
+            {
+                withinArea = false;
+                birdOnSlingShot = false;
+
+                spawnedBird.LaunchBird(direction, shotForce);
+
+                GameManager.gameManager.UseShot();
+
+                SetLines(centerPosition.position);
+
+                if(GameManager.gameManager.HasEnoughShots())
+                {
+                    StartCoroutine(SpawnAngieBirdDelay());
+                }
+            }
+        }
     }
 
     #region Slingshot Methods
@@ -115,6 +133,8 @@ public class SlingShotHandler : MonoBehaviour
         spawnedBird = Instantiate(angieBird, spawnPos, Quaternion.identity);
 
         spawnedBird.transform.right = birdDirection;
+
+        birdOnSlingShot = true;
     }
 
     private void PositionAngieBird()
@@ -130,6 +150,13 @@ public class SlingShotHandler : MonoBehaviour
 
         spawnedBird.transform.right = directionNormalized;
 
+    }
+
+    private IEnumerator SpawnAngieBirdDelay()
+    {
+        yield return new WaitForSeconds(spawnDelay);
+
+        SpawnBird();
     }
 
     #endregion
