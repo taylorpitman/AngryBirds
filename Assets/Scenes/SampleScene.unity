@@ -1101,8 +1101,10 @@ MonoBehaviour:
   centerPosition: {fileID: 586305879}
   idlePosition: {fileID: 1736469533}
   maxDistance: 3.5
+  shotForce: 9
   slingshotArea: {fileID: 943418640}
-  angieBird: {fileID: 8702708538666244095, guid: ac7e28772bd52432a93aada596c2eae2, type: 3}
+  angieBird: {fileID: 3259573523421664830, guid: ac7e28772bd52432a93aada596c2eae2, type: 3}
+  angieBirdPosOffset: 0.3
 --- !u!4 &1499200962
 Transform:
   m_ObjectHideFlags: 0
