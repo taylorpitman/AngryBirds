@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class SlingShotHandler : MonoBehaviour
 {
     //global variables  
-
     [Header("Line Renderers")]
     [SerializeField] private LineRenderer leftLineRenderer;
     [SerializeField] private LineRenderer rightLineRenderer;
@@ -19,6 +18,7 @@ public class SlingShotHandler : MonoBehaviour
 
     [Header("Position Limits")]
     [SerializeField] private float maxDistance = 3.5f;
+    [SerializeField] private float shotForce = 9f;
     private Vector2 slingShotLinesMaxPosition;  //limit how far lines can go
 
     [Header("Area Management")]
@@ -26,9 +26,16 @@ public class SlingShotHandler : MonoBehaviour
     private bool withinArea;
 
     [Header("Bird")]
-    [SerializeField] private GameObject angieBird;
+    [SerializeField] private AngieBird angieBird;
+    [SerializeField] private float angieBirdPosOffset = .3f;
+    private AngieBird spawnedBird;
+    private Vector2 direction;
+    private Vector2 directionNormalized;
 
-    private GameObject spawnedBird;
+    private bool birdOnSlingShot = false;
+
+    [SerializeField] private float spawnDelay = 2f;
+
 
     private void Awake()
     {
@@ -42,22 +49,39 @@ public class SlingShotHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //make this a public variable and do this in slingshotArea ??
         if (Mouse.current.leftButton.wasPressedThisFrame && slingshotArea.isWithinArea())
         {
             withinArea = true;
         }
 
-        if (Mouse.current.leftButton.isPressed && withinArea)
+        //nested if statement ?
+        if (Mouse.current.leftButton.isPressed && withinArea && birdOnSlingShot)
         {
             DrawSlingShot();
             PositionAngieBird();
 
         }
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            withinArea = false;
-        }
 
+        if (Mouse.current.leftButton.wasReleasedThisFrame && birdOnSlingShot)
+        {
+            if(GameManager.gameManager.HasEnoughShots())
+            {
+                withinArea = false;
+                birdOnSlingShot = false;
+
+                spawnedBird.LaunchBird(direction, shotForce);
+
+                GameManager.gameManager.UseShot();
+
+                SetLines(centerPosition.position);
+
+                if(GameManager.gameManager.HasEnoughShots())
+                {
+                    StartCoroutine(SpawnAngieBirdDelay());
+                }
+            }
+        }
     }
 
     #region Slingshot Methods
@@ -69,6 +93,10 @@ public class SlingShotHandler : MonoBehaviour
         slingShotLinesMaxPosition = centerPosition.position + Vector3.ClampMagnitude(touchPosition - centerPosition.position, maxDistance);
 
         SetLines(slingShotLinesMaxPosition);
+
+        direction = (Vector2)centerPosition.position - slingShotLinesMaxPosition;
+        directionNormalized = direction.normalized;     //ensures magnitured of direction doesnt go above 1
+
     }
 
     private void SetLines(Vector2 position)
@@ -91,22 +119,44 @@ public class SlingShotHandler : MonoBehaviour
     #region Angiebird Methods
     private void SpawnBird()
     {
+        //local variables
+        Vector2 birdDirection;
+        Vector2 spawnPos;
+        
         //slingshot idle position
         SetLines(idlePosition.position);
+        
+        birdDirection = (centerPosition.position - idlePosition.position).normalized;
+        spawnPos = (Vector2)idlePosition.position + birdDirection * angieBirdPosOffset;
 
         //adds angry bird
-        spawnedBird = Instantiate(angieBird, idlePosition.position, Quaternion.identity);
+        spawnedBird = Instantiate(angieBird, spawnPos, Quaternion.identity);
+
+        spawnedBird.transform.right = birdDirection;
+
+        birdOnSlingShot = true;
     }
 
     private void PositionAngieBird()
     {
-        spawnedBird.transform.position = slingShotLinesMaxPosition;
+        //lines up bird correctly on sling shot
+        spawnedBird.transform.position = slingShotLinesMaxPosition - directionNormalized * angieBirdPosOffset;
+        RotateAngieBird();
 
     }
 
     private void RotateAngieBird()
     {
-        
+
+        spawnedBird.transform.right = directionNormalized;
+
+    }
+
+    private IEnumerator SpawnAngieBirdDelay()
+    {
+        yield return new WaitForSeconds(spawnDelay);
+
+        SpawnBird();
     }
 
     #endregion
