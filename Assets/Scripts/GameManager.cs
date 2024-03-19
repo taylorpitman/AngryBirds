@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            LoseGame();
+            RestartGame();
         }
     }
 
@@ -101,10 +101,11 @@ public class GameManager : MonoBehaviour
     {
         //makes restart screen visible
         restartScreenObj.SetActive(true);
+        slingShotHandler.enabled = false;
 
     }
 
-    private void LoseGame()
+    public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
