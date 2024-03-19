@@ -50,20 +50,20 @@ public class SlingShotHandler : MonoBehaviour
     void Update()
     {
         //make this a public variable and do this in slingshotArea ??
-        if (Mouse.current.leftButton.wasPressedThisFrame && slingshotArea.isWithinArea())
+        if (InputManager.wasLeftButtonPressed && slingshotArea.isWithinArea())
         {
             withinArea = true;
         }
 
         //nested if statement ?
-        if (Mouse.current.leftButton.isPressed && withinArea && birdOnSlingShot)
+        if (InputManager.isLeftButtonPressed && withinArea && birdOnSlingShot)
         {
             DrawSlingShot();
             PositionAngieBird();
 
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame && birdOnSlingShot)
+        if (InputManager.wasLeftButtonReleased && birdOnSlingShot)
         {
             if(GameManager.gameManager.HasEnoughShots())
             {
@@ -87,7 +87,7 @@ public class SlingShotHandler : MonoBehaviour
     #region Slingshot Methods
     private void DrawSlingShot()
     {
-        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(InputManager.mouseTouchPosition);
 
         //mathematically does not allow the line to go passed a certain point from the center
         slingShotLinesMaxPosition = centerPosition.position + Vector3.ClampMagnitude(touchPosition - centerPosition.position, maxDistance);
