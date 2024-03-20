@@ -162,3 +162,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageThreshhold: 0.02
+  deathParticle: {fileID: 2516379932104050352, guid: c86228d81329ae44a9c1146ed5428096, type: 3}
