@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
+using System;
 
 public class SlingShotHandler : MonoBehaviour
 {
@@ -15,11 +17,12 @@ public class SlingShotHandler : MonoBehaviour
     [SerializeField] private Transform rightStartPosition;  //right sling shot line starts here
     [SerializeField] private Transform centerPosition;      //center of sling shot line starts here
     [SerializeField] private Transform idlePosition;        //idle sling shop is here
+    [SerializeField] private Transform elasticTransform;
 
     [Header("Position Limits")]
     [SerializeField] private float maxDistance = 3.5f;
     [SerializeField] private float shotForce = 9f;
-    private Vector2 slingShotLinesMaxPosition;  //limit how far lines can go
+    private Vector2 slingShotLinesMaxPosition;  //limit how far lines can go    [SerializeField] private float elasticDivider =  1.2f;
 
     [Header("Area Management")]
     [SerializeField] private SlingShotArea slingshotArea;
@@ -31,6 +34,10 @@ public class SlingShotHandler : MonoBehaviour
     private AngieBird spawnedBird;
     private Vector2 direction;
     private Vector2 directionNormalized;
+
+    [Header("Animating Slingshot")]
+    [SerializeField] private float elasticDivider =  1.2f;
+    [SerializeField] private AnimationCurve elasticCurve;
 
     private bool birdOnSlingShot = false;
 
@@ -63,7 +70,7 @@ public class SlingShotHandler : MonoBehaviour
 
         }
 
-        if (InputManager.wasLeftButtonReleased && birdOnSlingShot)
+        if (InputManager.wasLeftButtonReleased && birdOnSlingShot && withinArea)
         {
             if(GameManager.gameManager.HasEnoughShots())
             {
@@ -73,8 +80,7 @@ public class SlingShotHandler : MonoBehaviour
                 spawnedBird.LaunchBird(direction, shotForce);
 
                 GameManager.gameManager.UseShot();
-
-                SetLines(centerPosition.position);
+                AnimateSlingShot();
 
                 if(GameManager.gameManager.HasEnoughShots())
                 {
@@ -117,6 +123,7 @@ public class SlingShotHandler : MonoBehaviour
     #endregion
 
     #region Angiebird Methods
+    
     private void SpawnBird()
     {
         //local variables
@@ -157,6 +164,40 @@ public class SlingShotHandler : MonoBehaviour
         yield return new WaitForSeconds(spawnDelay);
 
         SpawnBird();
+    }
+
+    #endregion
+    
+    #region Animating Slingshot
+    private void AnimateSlingShot()
+    {   
+        //sets position of transform to where mouse position is on click
+        elasticTransform.position = leftLineRenderer.GetPosition(0);
+
+        //distance between elastic and center position
+        float distance = Vector2.Distance(elasticTransform.position, centerPosition.position);
+
+        //time based on how far the elatic is pulled back
+        float time = distance / elasticDivider;
+
+        //moves an invisible transform, follows a waveform(Ease) to simulate physics
+        elasticTransform.DOMove(centerPosition.position, time).SetEase(elasticCurve);
+
+        StartCoroutine(AnimateSlingShotLines(elasticTransform, time));
+    }
+
+    private IEnumerator AnimateSlingShotLines(Transform transform, float time)
+    {
+        float elapsedTime = 0f;
+
+        while(elapsedTime < time)
+        {
+            elapsedTime += Time.deltaTime;
+
+            SetLines(transform.position);
+
+            yield return null;
+        }
     }
 
     #endregion

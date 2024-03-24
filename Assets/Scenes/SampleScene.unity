@@ -236,6 +236,7 @@ Transform:
   - {fileID: 1784132029}
   - {fileID: 586305879}
   - {fileID: 1736469533}
+  - {fileID: 1816996086}
   m_Father: {fileID: 1499200962}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &121818983
@@ -391,7 +392,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 9
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -1329,7 +1330,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 11
+  m_SortingOrder: 12
   m_Sprite: {fileID: 752033856, guid: 102c77f3e786e0246b86a18ce4633db7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1890,11 +1891,73 @@ MonoBehaviour:
   rightStartPosition: {fileID: 1784132029}
   centerPosition: {fileID: 586305879}
   idlePosition: {fileID: 1736469533}
+  elasticTransform: {fileID: 1816996086}
   maxDistance: 3.5
   shotForce: 9
   slingshotArea: {fileID: 943418640}
   angieBird: {fileID: 3259573523421664830, guid: ac7e28772bd52432a93aada596c2eae2, type: 3}
   angieBirdPosOffset: 0.3
+  elasticDivider: 1.2
+  elasticCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 27.768536
+      outSlope: 27.768536
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.045014977
+      value: 1.25
+      inSlope: -6.3695564
+      outSlope: -6.3695564
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.21091062
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.0936122
+      value: 0.92724264
+      inSlope: 2.1454349
+      outSlope: 2.1454349
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.48226562
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.14359388
+      value: 1.0312017
+      inSlope: -1.3851138
+      outSlope: -1.3851138
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.37368757
+      outWeight: 0.040286396
+    - serializedVersion: 3
+      time: 0.16685797
+      value: 1
+      inSlope: -1.3411964
+      outSlope: -0.03536374
+      tangentMode: 5
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.036620934
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   spawnDelay: 2
 --- !u!4 &1499200962
 Transform:
@@ -2134,7 +2197,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 12
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -2409,6 +2472,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.313, y: -0.067, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 107381809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1816996085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1816996086}
+  m_Layer: 0
+  m_Name: ElasticTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1816996086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816996085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
